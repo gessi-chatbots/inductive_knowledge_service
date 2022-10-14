@@ -1,20 +1,22 @@
 import json, requests, sys, os
+from telnetlib import DO
 import matplotlib.pyplot as plt
 
 ####
-# USAGE: python similarity_analysis.py <k> <LEVEL> <folder>
+# USAGE: python similarity_analysis.py <k> <LEVEL> <documentType> <folder>
 # PARAMETERS
 KG_INDUCTIVE_KNOWLEDGE_SERVICE = 'http://localhost:5001/api/computeSimilarity'
 GRAPHDB_REPOSITORY  = 'http://localhost:8080/getTopKSimilarApps'
 LEVEL = int(sys.argv[2])
 K = int(sys.argv[1])
+DOCUMENT = sys.argv[3]
 prefix = 'https://schema.org/MobileApplication/'
 # END PARAMETERS
 
 data = json.load(open('representative_apps.json', 'r', encoding='utf-8'))
 
 kg_inductive_knowledge_response = requests.post(KG_INDUCTIVE_KNOWLEDGE_SERVICE, params={'level':LEVEL, 'k':K}, json = list(data.keys())).json()
-graphdb_repository_response = requests.get(GRAPHDB_REPOSITORY, params={'k':K, 'documentType':'DESCRIPTION'}, json = list(data.keys())).json()
+graphdb_repository_response = requests.get(GRAPHDB_REPOSITORY, params={'k':K, 'documentType':DOCUMENT}, json = list(data.keys())).json()
 
 def get_recall_rate_k(data, response):
     recall_rate_k = {}
@@ -40,10 +42,12 @@ with open('recall-rate-k-graphdb.json', 'w') as outfile:
             json.dump(recall_rate_k_graphdb, outfile)
 
 x = list(range(1,K+1))
-path = sys.argv[3]
+path = sys.argv[4] + "_" + DOCUMENT
 
 for app in recall_rate_k_graphdb.keys():
     graphdb = recall_rate_k_graphdb[app]
+    if len(graphdb) != K:
+        graphdb = [0] * K
     kgservice = recall_rate_k_kgservice[app]
     
     plt.figure()
