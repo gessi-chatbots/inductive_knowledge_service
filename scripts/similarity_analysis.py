@@ -35,11 +35,11 @@ def get_recall_rate_k(data, response):
 recall_rate_k_kgservice = get_recall_rate_k(data, kg_inductive_knowledge_response)
 recall_rate_k_graphdb = get_recall_rate_k(data, graphdb_repository_response)
 
-with open('recall-rate-k-kgservice.json', 'w') as outfile:
-            json.dump(recall_rate_k_kgservice, outfile)
+#with open('recall-rate-k-kgservice.json', 'w') as outfile:
+#            json.dump(recall_rate_k_kgservice, outfile)
 
-with open('recall-rate-k-graphdb.json', 'w') as outfile:
-            json.dump(recall_rate_k_graphdb, outfile)
+#with open('recall-rate-k-graphdb.json', 'w') as outfile:
+#            json.dump(recall_rate_k_graphdb, outfile)
 
 x = list(range(1,K+1))
 path = sys.argv[4] + "_" + DOCUMENT
