@@ -37,26 +37,25 @@ class GraphDB:
     def computeTopKSimilarApps(self, graph, app_a, k, level):
         apps = self.getAllApps(graph)
 
-        rank = []
+        res = {}
+        for app in app_a:
 
-        for compare_app in apps:
-            score = self.computeSimilarityBetweenTwoApps(graph, app_a, compare_app, level)
-            rank.append({"documentID": compare_app, 'score': self.computeSimilarityBetweenTwoApps(graph, app_a, compare_app, level), 'category': graph.nodes[compare_app]['https://schema.org/applicationCategory']})
-            #rank[compare_app] = self.computeSimilarityBetweenTwoApps(graph, app_a, compare_app, level)
+            rank = []
+            for compare_app in apps:
+                score = self.computeSimilarityBetweenTwoApps(graph, app, compare_app, level)
+                rank.append({"documentID": compare_app, 'score': score, 'category': graph.nodes[compare_app]['https://schema.org/applicationCategory']})
 
-        #TODO transform this so that the output is the same as index in GraphDB
-        # then check if possible to improve edge generation
-        sorted_rank = sorted(rank, key=lambda x:x['score'], reverse=True)
+            sorted_rank = sorted(rank, key=lambda x:x['score'], reverse=True)
+            res[app] = sorted_rank[0:k]
 
-        return sorted_rank[0:k]
+        return res
         
     def computeSimilarityBetweenTwoApps(self, graph, app_a, app_b, level):
        
         #print("Proof-of-Concept similarity report")
         # SubGraph1
-        nodes_subgraph_a = self.get_subgraph_nodes(graph, app_a)
-        nodes_subgraph_b = self.get_subgraph_nodes(graph, app_b)
-
+        #nodes_subgraph_a = self.get_subgraph_nodes(graph, app_a)
+        #nodes_subgraph_b = self.get_subgraph_nodes(graph, app_b)
         return self.simrankFeatureBased(graph, app_a, app_b, level)
         #self.simrankFeatureBased(graph, app_a, app_c)
 

@@ -18,13 +18,14 @@ def formatGraph():
     graphDB.formatGraph(route = "C:\\Users\\QuimMotger\\AndroidStudioProjects\\app_data_repository\\src\\main\\resources\\statements.rj")
     return "OK", 200
 
-@home_api.route('/computeSimilarity')
+@home_api.route('/computeSimilarity', methods = ['POST'])
 def computeSimilarity():
-    app_a = request.args.get('app_a')
+    app_a = request.get_json()
     app_b = request.args.get('app_b')
+
     k = request.args.get('k', type=int)
     if k is None:
-        k = 20
+        k = 50
 
     level = request.args.get('level', type=int)
     if level is None:
@@ -34,7 +35,10 @@ def computeSimilarity():
 
     graphDB = GraphDB()
     graph = graphDB.loadGraph()
-    app_a = prefix + app_a
+
+    for i in range(0, len(app_a)):
+        app_a[i] = prefix + app_a[i]
+    
     if app_b is None:
         return graphDB.computeTopKSimilarApps(graph, app_a, k, level), 200
     else:
