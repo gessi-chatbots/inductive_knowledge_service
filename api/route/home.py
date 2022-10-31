@@ -1,9 +1,7 @@
 from http import HTTPStatus
-import flask
+import flask, json
 from flask import Blueprint, request
 from flasgger import swag_from
-from api.service.community_detection_service import CommunityDetectionService
-from api.service.similarity_service import SimilarityService
 from api.service.graphdb import GraphDB
 
 home_api = Blueprint('api', __name__)
@@ -15,32 +13,70 @@ def welcome():
 @home_api.route('/graph')
 def formatGraph():
     graphDB = GraphDB()
-    graphDB.formatGraph(route = "C:\\Users\\QuimMotger\\AndroidStudioProjects\\app_data_repository\\src\\main\\resources\\statements.rj")
+    route = request.args.get('route')
+    graphDB.formatGraph(route = route)
     return "OK", 200
 
-@home_api.route('/computeSimilarity', methods = ['POST'])
-def computeSimilarity():
-    app_a = request.get_json()
-    app_b = request.args.get('app_b')
-
+@home_api.route('/computeCommunities', methods = ['POST'])
+def computeCommunities():
     k = request.args.get('k', type=int)
-    if k is None:
-        k = 50
 
+    networkFile = request.args.get('network-file')
+    algorithm = request.args.get('algorithm')
+    if algorithm is None:
+        algorithm = 'modularity'
+
+    graphDB = GraphDB()
+    if networkFile is not None:
+        graph = graphDB.loadGraph(networkFile)
+    else:
+        graph = graphDB.loadGraph()
+
+    return json.dumps(graphDB.computeCommunities(graph, k, algorithm)), 200
+
+@home_api.route('/getTopKSimilarApps', methods = ['POST'])
+def getTopKSimilarApps():
+    app_a = request.get_json()
+    #app_b = request.args.get('app_b')
+    algorithm = request.args.get('algorithm')
+    k = request.args.get('k', type=int)
     level = request.args.get('level', type=int)
-    if level is None:
-        level = 2
+    networkFile = request.args.get('network-file')
 
     prefix = 'https://schema.org/MobileApplication/'
 
     graphDB = GraphDB()
-    graph = graphDB.loadGraph()
+    if networkFile is not None:
+        graph = graphDB.loadGraph(networkFile)
+    else:
+        graph = graphDB.loadGraph()
 
     for i in range(0, len(app_a)):
         app_a[i] = prefix + app_a[i]
     
-    if app_b is None:
-        return graphDB.computeTopKSimilarApps(graph, app_a, k, level), 200
+    #if app_b is None:
+    return graphDB.computeTopKSimilarApps(graph, app_a, k, level, algorithm), 200
+    #else:
+    #    app_b = prefix + app_b
+    #    return graphDB.computeSimilarityBetweenTwoApps(graph, app_a, app_b, level), 200
+
+@home_api.route('/getTopKAppsByFeature', methods = ['POST'])
+def getTopKAppsByFeature():
+    features = request.get_json()
+    algorithm = request.args.get('algorithm')
+    k = request.args.get('k', type=int)
+    level = request.args.get('level', type=int)
+    networkFile = request.args.get('network-file')
+
+    prefix = 'https://schema.org/DefinedTerm/'
+
+    graphDB = GraphDB()
+    if networkFile is not None:
+        graph = graphDB.loadGraph(networkFile)
     else:
-        app_b = prefix + app_b
-        return graphDB.computeSimilarityBetweenTwoApps(graph, app_a, app_b, level), 200
+        graph = graphDB.loadGraph()
+
+    for i in range(0, len(features)):
+        features[i] = prefix + features[i].replace(" ", "")
+    
+    return graphDB.computeTopKAppsByFeature(graph, features, k, level, algorithm), 200
