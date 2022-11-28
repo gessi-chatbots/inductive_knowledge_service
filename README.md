@@ -1,34 +1,31 @@
-# Flask API Starter Kit
+# Inductive Knowledge Service
 
-Sample API layout structure to be used as a baseline for other apps
+## Description
 
-## Dependencies
+The **InductiveKnowledgeService** is a Python-based Flask service providing access to graph-based inductive algorithms, focused on node similarity.
 
-- [flask](https://palletsprojects.com/p/flask/): Python server of choise
-- [flasgger](https://github.com/flasgger/flasgger): Used to generate the swagger documentation
-- [flask-marshmallow](https://flask-marshmallow.readthedocs.io/en/latest/): My favourite serializer
-- [apispec](https://apispec.readthedocs.io/en/latest/): Required for the integration between marshmallow and flasgger
+## Used technologies
 
-## Set Up
+Libraries, frameworks, engines, tools, third-party services...
 
-1. Check out the code
-2. Install requirements
-    ```
-    pipenv install
-    ```
-3. Start the server with:
-    ```
-   pipenv run python -m flask run
-    ```
-   
-4. Visit http://localhost/api for the home api
+| Component           | Description                                                           | Version |
+|---------------------|-----------------------------------------------------------------------|---------|
+| NetworkX            | Python package for the creation, manipulation, and study of the structure, dynamics, and functions of complex networks. | 2.8.8   |
 
-4. Visit http://localhost/apidocs for the swagger documentation
-   
-## Tests
 
-The code is covered by tests, to run the tests please execute
+## How to install
 
-```
-pipenv run python -m unittest
-```
+1. Clone project
+
+## How to use
+
+1. Run "Controller.py" to start the flask server.
+2. ...
+
+## Notes for developers
+
+Branch 'develop' for new feature integration
+
+## License
+
+Free use of this software is granted under the terms of the GNU General Public License v3.0: https://www.gnu.org/licenses/gpl.html
