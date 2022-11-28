@@ -1,5 +1,7 @@
 # Inductive Knowledge Service
 
+*[README file in construction. For more information, please contact jmotger (at) essi.upc.edu]*
+
 ## Description
 
 The **InductiveKnowledgeService** is a Python-based Flask service providing access to graph-based inductive algorithms, focused on node similarity.
