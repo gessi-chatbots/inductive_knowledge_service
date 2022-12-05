@@ -8,4 +8,4 @@ RUN pip install -r requirements.txt
 
 ENTRYPOINT [ "python" ]
 
-CMD ["NLPController.py" ]
+CMD ["app.py" ]
